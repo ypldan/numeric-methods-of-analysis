@@ -21,6 +21,7 @@ public class NewtonChebyshevInterpolator {
     private ArrayList<Float> nodeList;
     private NewtonPolynom polynom;
     private float bestMistake;
+    private ArrayList<Float> mistakes;
 
     public static void main(String[] args) {
         ArrayList<Integer> m = new ArrayList<>(Arrays.asList(4, 5, 6, 8, 9));
@@ -91,6 +92,7 @@ public class NewtonChebyshevInterpolator {
         }
         polynom = new NewtonPolynom(coefficients, nodeList);
         bestMistake = bestMistake(a, b, m, nthDerivative);
+        mistakes=mistake(a,b,m,nthDerivative);
     }
 
     public void createOutput() throws IOException {
@@ -106,6 +108,8 @@ public class NewtonChebyshevInterpolator {
             writer.println();
         });
         writer.println("Best mistake: "+bestMistake);
+        writer.print("Mistakes: ");
+        mistakes.forEach(x -> writer.print(x+" "));
         writer.close();
     }
 
@@ -113,8 +117,7 @@ public class NewtonChebyshevInterpolator {
                                     float b,
                                     int n,
                                     Function<Float, Float> nthDerivative) {
-        float result = (float) (maxAbsValue(a, b, nthDerivative, 0.01f) * pow(b - a, n) * pow(2, 1 - 2 * n) / factorial(n));
-        return result;
+        return (float) (maxAbsValue(a, b, nthDerivative, 0.01f) * pow(b - a, n) * pow(2, 1 - 2 * n) / factorial(n));
     }
 
     private static int factorial(int n) {
@@ -139,5 +142,25 @@ public class NewtonChebyshevInterpolator {
             }
         }
         return result;
+    }
+
+    private static ArrayList<Float> mistake(float a,
+                                            float b,
+                                            int m,
+                                            Function<Float,Float> nthDerivative) {
+        float h = (b - a) / (m - 1);
+        ArrayList<Float> mistakes=new ArrayList<>();
+        for (int i = 0; i < m - 1; i++) {
+            float point = (float) ((b - a) * 0.5 * (2 * (float)i + 1) / ((float)m - 1));
+            float t = (point - a) / h;
+            float mistake = maxAbsValue(a,b,nthDerivative,0.01f);
+            for (int j = 0; j < m; j++) {
+                mistake *= (t - j);
+            }
+            mistake = (float) (Math.abs(mistake) * pow(h, m) / factorial(m));
+            mistakes.add(mistake);
+        }
+        return mistakes;
+
     }
 }
