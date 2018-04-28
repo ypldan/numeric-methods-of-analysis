@@ -1,8 +1,6 @@
 package task1;
 
 import java.util.ArrayList;
-import static java.lang.Math.*;
-
 import java.util.LinkedList;
 import java.util.function.Function;
 

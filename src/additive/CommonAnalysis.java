@@ -61,7 +61,7 @@ public class CommonAnalysis {
         float h = (b - a) / (m - 1);
         ArrayList<Float> mistakes=new ArrayList<>();
         for (int i = 0; i < m - 1; i++) {
-            float point = (float) ((b - a) * 0.5 * (2 * (float)i + 1) / ((float)m - 1));
+            float point = (float) ((b - a) * 0.5 * (2f * i + 1) / (m - 1f));
             float t = (point - a) / h;
             float mistake = maxAbsValue(a,b,nthDerivative,0.01f);
             for (int j = 0; j < m; j++) {

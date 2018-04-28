@@ -1,25 +1,35 @@
 package task2;
 
 import additive.LinearSystemSolver;
+import additive.Polynom;
 
 import static additive.CommonAnalysis.*;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class OrdinaryListSquaresInterpolator {
 
     public static void main(String[] args) {
-        OrdinaryListSquaresInterpolator interpolator=new OrdinaryListSquaresInterpolator(
-                0f,10f,30, x -> (float) (10 * x * x * x * Math.pow(Math.PI * 5 + x, -0.25)));
-        interpolator.getCoeffs().forEach(System.out::println);
+        try {
+            OrdinaryListSquaresInterpolator interpolator = new OrdinaryListSquaresInterpolator(
+                    0f, 10f, 30, x -> (float) (10 * x * x * x * Math.pow(Math.PI * 5 + x, -0.25)));
+            interpolator.createOutput();
+        } catch (IOException exc) {
+            exc.printStackTrace();
+        }
     }
 
     private Function<Float, Float> f;
     private int n;
     private float a,b;
     private ArrayList<Float> coeffs;
+    private Polynom polynom;
+    private float mistake;
 
     public OrdinaryListSquaresInterpolator(float a, float b, int n, Function<Float, Float> f) {
         this.f = f;
@@ -63,9 +73,35 @@ public class OrdinaryListSquaresInterpolator {
         column[1]=(float) yx.stream().mapToDouble(x->x).sum();
         column[2]=(float) yx2.stream().mapToDouble(x->x).sum();
         coeffs=LinearSystemSolver.solveGauss(matrix,column);
+        polynom=new Polynom(coeffs);
+        float sum=0;
+        for (int i = 0; i < x1.size(); i++) {
+            float temp=y.get(i)-polynom.apply(x1.get(i));
+            temp*=temp;
+            sum+=temp;
+        }
+        mistake= (float) Math.sqrt(1./28.*sum);
     }
 
     public ArrayList<Float> getCoeffs() {
         return coeffs;
+    }
+
+    public void createOutput() throws IOException {
+        PrintWriter writer=new PrintWriter("task2out/output.txt");
+        writer.print(coeffs.get(0));
+        if (coeffs.get(1)>0) {
+            writer.print("+"+coeffs.get(1)+"x");
+        } else if (coeffs.get(1)<0) {
+            writer.print(coeffs.get(1)+"x");
+        }
+        if (coeffs.get(2)>0) {
+            writer.print("+"+coeffs.get(2)+"x^2");
+        } else if (coeffs.get(2)<0) {
+            writer.print(coeffs.get(2)+"x^2");
+        }
+        writer.println();
+        writer.print("mistake: "+mistake);
+        writer.close();
     }
 }
