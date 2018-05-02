@@ -8,9 +8,7 @@ import static additive.CommonAnalysis.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 public class OrdinaryListSquaresInterpolator {
 
@@ -27,9 +25,12 @@ public class OrdinaryListSquaresInterpolator {
     private Function<Float, Float> f;
     private int n;
     private float a,b;
-    private ArrayList<Float> coeffs;
-    private Polynom polynom;
-    private float mistake;
+    private ArrayList<Float> coeffsGauss;
+    private Polynom polynomGauss;
+    private ArrayList<Float> coeffsHouseholder;
+    private Polynom polynomHouseholder;
+    private float mistakeGauss;
+    private float mistakeHouseholder;
 
     public OrdinaryListSquaresInterpolator(float a, float b, int n, Function<Float, Float> f) {
         this.f = f;
@@ -72,36 +73,61 @@ public class OrdinaryListSquaresInterpolator {
         column[0]=(float) y.stream().mapToDouble(x->x).sum();
         column[1]=(float) yx.stream().mapToDouble(x->x).sum();
         column[2]=(float) yx2.stream().mapToDouble(x->x).sum();
-        coeffs=LinearSystemSolver.solveGauss(matrix,column);
-        polynom=new Polynom(coeffs);
+        coeffsGauss =LinearSystemSolver.solveGauss(matrix,column);
+        polynomGauss =new Polynom(coeffsGauss);
+        coeffsHouseholder =LinearSystemSolver.solveHouseholder(matrix,column);
+        polynomHouseholder =new Polynom(coeffsHouseholder);
         float sum=0;
         for (int i = 0; i < x1.size(); i++) {
-            float temp=y.get(i)-polynom.apply(x1.get(i));
+            float temp=y.get(i)- polynomGauss.apply(x1.get(i));
             temp*=temp;
             sum+=temp;
         }
-        mistake= (float) Math.sqrt(1./28.*sum);
+        mistakeGauss = (float) Math.sqrt(1./28.*sum);
+        sum=0;
+        for (int i = 0; i < x1.size(); i++) {
+            float temp=y.get(i)- polynomHouseholder.apply(x1.get(i));
+            temp*=temp;
+            sum+=temp;
+        }
+        mistakeHouseholder = (float) Math.sqrt(1./28.*sum);
     }
 
-    public ArrayList<Float> getCoeffs() {
-        return coeffs;
+    public ArrayList<Float> getCoeffsGauss() {
+        return coeffsGauss;
     }
 
     public void createOutput() throws IOException {
         PrintWriter writer=new PrintWriter("task2out/output.txt");
-        writer.print(coeffs.get(0));
-        if (coeffs.get(1)>0) {
-            writer.print("+"+coeffs.get(1)+"x");
-        } else if (coeffs.get(1)<0) {
-            writer.print(coeffs.get(1)+"x");
+        writer.print("Gauss: ");
+        writer.print(coeffsGauss.get(0));
+        if (coeffsGauss.get(1)>0) {
+            writer.print("+"+ coeffsGauss.get(1)+"x");
+        } else if (coeffsGauss.get(1)<0) {
+            writer.print(coeffsGauss.get(1)+"x");
         }
-        if (coeffs.get(2)>0) {
-            writer.print("+"+coeffs.get(2)+"x^2");
-        } else if (coeffs.get(2)<0) {
-            writer.print(coeffs.get(2)+"x^2");
+        if (coeffsGauss.get(2)>0) {
+            writer.print("+"+ coeffsGauss.get(2)+"x^2");
+        } else if (coeffsGauss.get(2)<0) {
+            writer.print(coeffsGauss.get(2)+"x^2");
         }
         writer.println();
-        writer.print("mistake: "+mistake);
+        writer.println("mistake: "+ mistakeGauss);
+        writer.println();
+        writer.print("Householder: ");
+        writer.print(coeffsHouseholder.get(0));
+        if (coeffsHouseholder.get(1)>0) {
+            writer.print("+"+ coeffsHouseholder.get(1)+"x");
+        } else if (coeffsHouseholder.get(1)<0) {
+            writer.print(coeffsHouseholder.get(1)+"x");
+        }
+        if (coeffsHouseholder.get(2)>0) {
+            writer.print("+"+ coeffsHouseholder.get(2)+"x^2");
+        } else if (coeffsHouseholder.get(2)<0) {
+            writer.print(coeffsHouseholder.get(2)+"x^2");
+        }
+        writer.println();
+        writer.println("mistake: "+ mistakeGauss);
         writer.close();
     }
 }
