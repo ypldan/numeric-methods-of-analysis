@@ -8,6 +8,9 @@ import static java.lang.Math.PI;
 import static java.lang.Math.cos;
 import static java.lang.Math.pow;
 
+/**
+ * Contains static common functions, connected with numerical analysis
+ */
 public class CommonAnalysis {
 
     /**
