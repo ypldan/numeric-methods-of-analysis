@@ -1,4 +1,5 @@
 ?*.iml
+?*.docx
 .DS_Store/
 .idea/
 out/
