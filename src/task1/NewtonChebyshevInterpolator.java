@@ -1,6 +1,6 @@
 package task1;
 
-import additive.CommonAnalysis;
+import util.CommonAnalysis;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,16 +12,46 @@ import java.util.function.Function;
 import static java.lang.Math.PI;
 import static java.lang.Math.pow;
 
+/**
+ * Class, that interpolates input function by Newton polynom
+ */
 public class NewtonChebyshevInterpolator {
 
+    /**
+     * number of points
+     */
     private int m;
+    /**
+     * function
+     */
     private Function<Float, Float> f;
+    /**
+     * nth derivative of function <i><b>f</b></i>
+     */
     private Function<Float, Float> nthDerivative;
+    /**
+     * start of interval
+     */
     private float a;
+    /**
+     * end of interval
+     */
     private float b;
+    /**
+     * list of chebyshev nodes
+     */
     private ArrayList<Float> nodeList;
+    /**
+     * Newton polynomial function
+     */
     private NewtonPolynom polynom;
+    /**
+     * mistake of interpolating in chebyshev nodes
+     */
     private float bestMistake;
+    /**
+     * mistakes of interpolating function in uniform nodes in the middles of intervals
+     */
     private ArrayList<Float> mistakes;
 
     public static void main(String[] args) {
@@ -44,6 +74,14 @@ public class NewtonChebyshevInterpolator {
         });
     }
 
+    /**
+     * Constructs the interpolator class, processes data
+     * @param f function
+     * @param a start of interval
+     * @param b end of interval
+     * @param m number of points
+     * @param nthDerivative nth derivative of function
+     */
     public NewtonChebyshevInterpolator(Function<Float, Float> f,
                                        float a,
                                        float b,
@@ -57,6 +95,9 @@ public class NewtonChebyshevInterpolator {
         processData();
     }
 
+    /**
+     * Processes input data
+     */
     private void processData() {
         nodeList = CommonAnalysis.chebyshevNodes(a, b, m);
         float[][] table = CommonAnalysis.table(nodeList, f);
@@ -69,6 +110,10 @@ public class NewtonChebyshevInterpolator {
         mistakes = CommonAnalysis.mistake(a, b, m, nthDerivative);
     }
 
+    /**
+     * Creates output
+     * @throws IOException
+     */
     public void createOutput() throws IOException {
         PrintWriter writer = new PrintWriter("task1out/m" + m + ".txt");
         writer.println("m=" + m + ":");
@@ -86,4 +131,5 @@ public class NewtonChebyshevInterpolator {
         mistakes.forEach(x -> writer.print(x + " "));
         writer.close();
     }
+
 }
