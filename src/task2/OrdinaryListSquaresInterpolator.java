@@ -1,15 +1,18 @@
 package task2;
 
-import additive.LinearSystemSolver;
-import additive.Polynom;
+import util.LinearSystemSolver;
+import util.Polynom;
 
-import static additive.CommonAnalysis.*;
+import static util.CommonAnalysis.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.function.Function;
 
+/**
+ * Class, that interpolates function with polynom of 2nd degree using Gauss and Householder methods of LS-solving
+ */
 public class OrdinaryListSquaresInterpolator {
 
     public static void main(String[] args) {
@@ -22,16 +25,54 @@ public class OrdinaryListSquaresInterpolator {
         }
     }
 
+    /**
+     * function to interpolate
+     */
     private Function<Float, Float> f;
+    /**
+     * number of intervals
+     */
     private int n;
-    private float a,b;
+    /**
+     * start of interval
+     */
+    private float a;
+    /**
+     * end of interval
+     */
+    private float b;
+    /**
+     * coefficients of polynomial, calculated using Gauss method
+     */
     private ArrayList<Float> coeffsGauss;
+    /**
+     * polynomial with coefficients, calculated using Gauss method
+     */
     private Polynom polynomGauss;
+    /**
+     * coefficients of polynomial, calculated using Householder method
+     */
     private ArrayList<Float> coeffsHouseholder;
+    /**
+     * polynomial with coefficients, calculated using Householder method
+     */
     private Polynom polynomHouseholder;
+    /**
+     * mistake of Gauss polynomial
+     */
     private float mistakeGauss;
+    /**
+     * mistake of Householder polynomial
+     */
     private float mistakeHouseholder;
 
+    /**
+     * Constructs the interpolator class
+     * @param a start of interval
+     * @param b end of interval
+     * @param n number of intervals
+     * @param f function
+     */
     public OrdinaryListSquaresInterpolator(float a, float b, int n, Function<Float, Float> f) {
         this.f = f;
         this.n = n;
@@ -40,8 +81,11 @@ public class OrdinaryListSquaresInterpolator {
         process();
     }
 
+    /**
+     * processes input data
+     */
     private void process() {
-        ArrayList<Float> x1=ordinaryNodes(a,b,n);
+        ArrayList<Float> x1= uniformNodes(a,b,n);
         ArrayList<Float> y=functionValues(x1,f);
         ArrayList<Float> x0=new ArrayList<>(x1.size()),
                 x2=new ArrayList<>(x1.size()),
@@ -93,10 +137,10 @@ public class OrdinaryListSquaresInterpolator {
         mistakeHouseholder = (float) Math.sqrt(1./28.*sum);
     }
 
-    public ArrayList<Float> getCoeffsGauss() {
-        return coeffsGauss;
-    }
-
+    /**
+     * creates output of task2
+     * @throws IOException
+     */
     public void createOutput() throws IOException {
         PrintWriter writer=new PrintWriter("task2out/output.txt");
         writer.print("Gauss: ");
@@ -127,7 +171,7 @@ public class OrdinaryListSquaresInterpolator {
             writer.print(coeffsHouseholder.get(2)+"x^2");
         }
         writer.println();
-        writer.println("mistake: "+ mistakeGauss);
+        writer.println("mistake: "+ mistakeHouseholder);
         writer.close();
     }
 }
