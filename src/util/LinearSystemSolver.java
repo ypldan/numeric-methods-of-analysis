@@ -4,8 +4,17 @@ import com.sun.istack.internal.NotNull;
 
 import java.util.ArrayList;
 
+/**
+ * Class, that gives static methods to solve linear systems <b>Ax=b</b>, where <b>A</b> - <i>square matrix</i>, <b>x</b>, <b>b</b> - <i>columns</i>
+ */
 public class LinearSystemSolver {
 
+    /**
+     * Solves linear system <b>Ax=b</b> using householder method of QR-decomposition
+     * @param squareMatrix matrix A
+     * @param column column b
+     * @return column x
+     */
     public static ArrayList<Float> solveHouseholder(float[][] squareMatrix, float[] column) {
         int n = squareMatrix.length;
         float[][] matrix = new float[n][n];
@@ -62,6 +71,12 @@ public class LinearSystemSolver {
         return x;
     }
 
+    /**
+     * Solves linear system <b>Ax=b</b> using gauss method of QR-decomposition
+     * @param squareMatrix matrix A
+     * @param column column b
+     * @return column x
+     */
     public static ArrayList<Float> solveGauss(@NotNull float[][] squareMatrix, @NotNull float[] column) {
         int n = squareMatrix.length;
         float[][] matrix = new float[n][n];
@@ -109,6 +124,12 @@ public class LinearSystemSolver {
         return x;
     }
 
+    /**
+     * Finds index of maximum element in column
+     * @param matrix matrix
+     * @param column column
+     * @return index
+     */
     private static int indexMaxInCol(@NotNull float[][] matrix, int column) {
         int result = column;
         for (int i = column + 1; i < matrix.length; ++i) {
@@ -119,46 +140,13 @@ public class LinearSystemSolver {
         return result;
     }
 
-    private static float[] sum(@NotNull float[] p1, @NotNull float[] p2) {
-        float[] result = new float[p1.length];
-        for (int i = 0; i < p1.length; i++) {
-            result[i] = p1[i] + p2[i];
-        }
-        return result;
-    }
-
-    private static float[] multiply(@NotNull float[] p1, float a) {
-        float[] result = new float[p1.length];
-        for (int i = 0; i < p1.length; i++) {
-            result[i] = p1[i] * a;
-        }
-        return result;
-    }
-
-    private static float norm(@NotNull float[] p) {
-        float result = 0;
-        for (int i = 0; i < p.length; i++) {
-            result = hypot(result, p[i]);
-        }
-        return result;
-    }
-
-    private static float[] getColumn(@NotNull float[][] matrix, int j) {
-        float[] result = new float[matrix.length];
-        for (int i = 0; i < matrix.length; i++) {
-            result[i] = matrix[i][j];
-        }
-        return result;
-    }
-
-    private static float columnNorm(@NotNull float[][] matrix, int j) {
-        float result = 0;
-        for (int i = 0; i < matrix.length; i++) {
-            result = hypot(result, matrix[i][j]);
-        }
-        return result;
-    }
-
+    /**
+     * Finds norm of column starting from kth row
+     * @param matrix matrix
+     * @param j column index
+     * @param k raw index
+     * @return numeric value of norm
+     */
     private static float columnNorm(@NotNull float[][] matrix, int j, int k) {
         float result = 0;
         for (int i = k; i < matrix.length; i++) {
@@ -167,6 +155,12 @@ public class LinearSystemSolver {
         return result;
     }
 
+    /**
+     * Function (a^2+b^2)^(1/2) without under/overflowing
+     * @param a first argument
+     * @param b second argument
+     * @return numeric value of function
+     */
     private static float hypot(float a, float b) {
         float result;
         if (Math.abs(a) > Math.abs(b)) {
