@@ -22,6 +22,7 @@ public class Integrator {
         integrateMiddleRectangles(f,a,b,eps2,writer);
         writer.println();
         writer.println("Simpson:");
+        writer.println();
         integrateSimpson(f,a,b,eps1,writer);
         writer.println();
         integrateSimpson(f,a,b,eps2,writer);
@@ -40,7 +41,7 @@ public class Integrator {
         float delta = eps + 1f;
         while (Math.abs(delta) >= eps) {
             i1 = i2;
-            n *= 2;
+            n++;
             i2 = countMiddleRectangles(f, a, b, n);
             delta = (i2 - i1) / 3;
         }
@@ -71,19 +72,19 @@ public class Integrator {
                                          float b,
                                          float eps,
                                          @Nullable PrintWriter writer) {
-        int n = 2;
+        int n = 1;
         float i1 = 0, i2 = countSimpson(f, a, b, n);
         float delta = eps + 1;
         while (delta >= eps) {
             i1 = i2;
-            n *= 2;
+            n++;
             i2 = countSimpson(f, a, b, n);
             delta = Math.abs(i2 - i1) / 15;
         }
         i2 = (16 * i2 - i1) / 15;
         if (writer != null) {
             writer.println("Mistake: " + eps);
-            writer.println("Step: " + (b - a) / n);
+            writer.println("Step: " + (b - a) / (2*n));
             writer.println("Value: " + i2);
             writer.println("Score " + delta);
         }
@@ -94,14 +95,13 @@ public class Integrator {
                                       float a,
                                       float b,
                                       int n) {
-        float step = (b - a) / n;
-        float s1 = 0, s2 = 0;
-        int k = (n - 1) / 2;
-        for (int i = 0; i < k; i++) {
-            s1 += f.apply(a + step + i * 2f * step);
-            s2 += f.apply(a + (i + 1) * 2f * step);
+        float step = (b - a) / (2f*n);
+        float s1=0, s2=0;
+        for (int i = 1; i < n; i++) {
+            s1+=f.apply(a+i*2f*step);
+            s2+=f.apply(a+(2*i-1f)*step);
         }
-        //return h*(func(a)+func(b)+4*sum1+2*sum2)/3;
-        return step * (f.apply(a) + f.apply(b) + 4 * s1 + 2 * s2) / 3;
+        s2+=f.apply(a+(2*n-1f)*step);
+        return step * (f.apply(a) + f.apply(b) + 2 * s1 + 4 * s2) / 3f;
     }
 }

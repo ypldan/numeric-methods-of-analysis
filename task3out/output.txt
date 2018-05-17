@@ -1,0 +1,24 @@
+Middle rectangles:
+
+Mistake: 5.0E-4
+Step: 0.075187966
+Value: 11338.302
+Score 3.2552084E-4
+
+Mistake: 5.0E-6
+Step: 0.06993007
+Value: 11338.345
+Score 0.0
+
+Simpson:
+
+Mistake: 5.0E-4
+Step: 0.625
+Value: 11338.601
+Score 3.90625E-4
+
+Mistake: 5.0E-6
+Step: 0.5
+Value: 11338.6045
+Score 0.0
+
