@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.function.Function;
 
+/**
+ * Class, that gives static methods, that allow to perform <b><i>numerical integrating</i></b>.
+ */
 public class Integrator {
 
     public static void main(String[] args) throws IOException {
@@ -30,6 +33,15 @@ public class Integrator {
         writer.close();
     }
 
+    /**
+     * gives the numerical value of integral on function in interval
+     * @param f function
+     * @param a start of interval
+     * @param b end of interval
+     * @param eps accuracy
+     * @param writer could be null, parameter to output additive information
+     * @return numerical value of integral
+     */
     public static float integrateMiddleRectangles(Function<Float, Float> f,
                                                   float a,
                                                   float b,
@@ -55,6 +67,14 @@ public class Integrator {
         return i2;
     }
 
+    /**
+     * numerical value of integral using method of middle rectangles
+     * @param f function
+     * @param a start of interval
+     * @param b end of interval
+     * @param n number of steps
+     * @return numerical value of integral
+     */
     private static float countMiddleRectangles(Function<Float, Float> f,
                                                float a,
                                                float b,
@@ -67,6 +87,15 @@ public class Integrator {
         return result;
     }
 
+    /**
+     * gives the numerical value of integral on function in interval
+     * @param f function
+     * @param a start of interval
+     * @param b end of interval
+     * @param eps accuracy
+     * @param writer could be null, parameter to output additive information
+     * @return numerical value of integral
+     */
     public static float integrateSimpson(Function<Float, Float> f,
                                          float a,
                                          float b,
@@ -91,6 +120,14 @@ public class Integrator {
         return i2;
     }
 
+    /**
+     * numerical value of integral using Simpson's method
+     * @param f function
+     * @param a start of interval
+     * @param b end of interval
+     * @param n number of steps
+     * @return numerical value of integral
+     */
     private static float countSimpson(Function<Float, Float> f,
                                       float a,
                                       float b,
