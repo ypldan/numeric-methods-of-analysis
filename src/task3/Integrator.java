@@ -169,9 +169,10 @@ public class Integrator {
                                           Function<Float, Float> fourthDerivative,
                                           float a,
                                           float b) {
-        float h = (float) pow(eps * 288f / (b - a) / CommonAnalysis.maxAbsValue(a, b, fourthDerivative, 1e-3f), 1. / 3);
-        double result = Math.ceil((b - a) / h);
-        return (int) result;
+        float delta = b - a;
+        delta = (delta*delta*delta*delta*delta)/(180*eps);
+        delta*=CommonAnalysis.maxAbsValue(a, b, fourthDerivative, 1e-3f);
+        return (int)Math.pow(delta,1/4)+1;
     }
 
     /**
@@ -187,8 +188,9 @@ public class Integrator {
                                              Function<Float, Float> secondDerivative,
                                              float a,
                                              float b) {
-        float h = (float) pow(eps * 24f / ((b - a) * CommonAnalysis.maxAbsValue(a, b, secondDerivative, 1e-3f)), 0.5);
-        double result = Math.ceil((b - a) / h);
-        return (int) result;
+        float delta = b - a;
+        delta = (delta*delta*delta)/(24*eps);
+        delta*=CommonAnalysis.maxAbsValue(a, b, secondDerivative, 1e-3f);
+        return (int)Math.pow(delta,1/2)+1;
     }
 }
