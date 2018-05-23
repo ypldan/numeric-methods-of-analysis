@@ -62,7 +62,7 @@ public class Integrator {
         float delta = eps + 1f;
         while (Math.abs(delta) >= eps) {
             i1 = i2;
-            n++;
+            n*=2;
             i2 = countMiddleRectangles(f, a, b, n);
             delta = (i2 - i1) / 3;
         }
@@ -119,7 +119,7 @@ public class Integrator {
         float delta = eps + 1;
         while (delta >= eps) {
             i1 = i2;
-            n++;
+            n*=2;
             i2 = countSimpson(f, a, b, n);
             delta = Math.abs(i2 - i1) / 15;
         }
